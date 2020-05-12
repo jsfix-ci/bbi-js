@@ -52,12 +52,7 @@ export class BigBed extends BBI {
     const { extHeaderOffset, isBigEndian } = await this.getHeader(abortSignal)
     const { buffer: data } = await this.bbi.read(Buffer.alloc(64), 0, 64, extHeaderOffset)
     const le = isBigEndian ? 'big' : 'little'
-    const ret = new Parser()
-      .endianess(le)
-      .uint16('size')
-      .uint16('count')
-      .uint64('offset')
-      .parse(data).result
+    const ret = new Parser().endianess(le).uint16('size').uint16('count').uint64('offset').parse(data).result
     const { count, offset } = ret
 
     // no extra index is defined if count==0

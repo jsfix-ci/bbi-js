@@ -91,14 +91,9 @@ function getParsers(isBigEndian: boolean): any {
         }),
       },
     })
-  const bigBedParser = new Parser()
-    .endianess(le)
-    .uint32('chromId')
-    .int32('start')
-    .int32('end')
-    .string('rest', {
-      zeroTerminated: true,
-    })
+  const bigBedParser = new Parser().endianess(le).uint32('chromId').int32('start').int32('end').string('rest', {
+    zeroTerminated: true,
+  })
 
   const bigWigParser = new Parser()
     .endianess(le)
@@ -123,10 +118,7 @@ function getParsers(isBigEndian: boolean): any {
         }),
         [BIG_WIG_TYPE_GRAPH]: new Parser().array('items', {
           length: 'itemCount',
-          type: new Parser()
-            .int32('start')
-            .int32('end')
-            .float('score'),
+          type: new Parser().int32('start').int32('end').float('score'),
         }),
       },
     })
