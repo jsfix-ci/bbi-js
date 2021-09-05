@@ -133,7 +133,11 @@ export abstract class BBI {
   public getHeader(opts: RequestOptions | AbortSignal = {}) {
     const options = 'aborted' in opts ? { signal: opts } : opts
 
-    return this.headerCache.get(JSON.stringify(options), options, options?.signal)
+    return this.headerCache.get(
+      JSON.stringify(options),
+      options,
+      options?.signal,
+    )
   }
 
   /*
@@ -169,13 +173,25 @@ export abstract class BBI {
     return { ...header, ...chroms }
   }
 
-  private async _getMainHeader(opts: RequestOptions, requestSize = 2000): Promise<Header> {
-    const { buffer } = await this.bbi.read(Buffer.alloc(requestSize), 0, requestSize, 0, opts)
+  private async _getMainHeader(
+    opts: RequestOptions,
+    requestSize = 2000,
+  ): Promise<Header> {
+    const { buffer } = await this.bbi.read(
+      Buffer.alloc(requestSize),
+      0,
+      requestSize,
+      0,
+      opts,
+    )
     const isBigEndian = this._isBigEndian(buffer)
     const ret = getParsers(isBigEndian)
     const header = ret.headerParser.parse(buffer).result
     header.fileType = header.magic === BIG_BED_MAGIC ? 'bigbed' : 'bigwig'
-    if (header.asOffset > requestSize || header.totalSummaryOffset > requestSize) {
+    if (
+      header.asOffset > requestSize ||
+      header.totalSummaryOffset > requestSize
+    ) {
       return this._getMainHeader(opts, requestSize * 2)
     }
     if (header.asOffset) {
@@ -209,7 +225,9 @@ export abstract class BBI {
   private async _readChromTree(header: Header, opts: { signal?: AbortSignal }) {
     const isBE = header.isBigEndian
     const le = isBE ? 'big' : 'little'
-    const refsByNumber: { [key: number]: { name: string; id: number; length: number } } = []
+    const refsByNumber: {
+      [key: number]: { name: string; id: number; length: number }
+    } = []
     const refsByName: { [key: string]: number } = {}
     const { chromTreeOffset } = header
     let { unzoomedDataOffset } = header
@@ -302,7 +320,10 @@ export abstract class BBI {
   /*
    * abstract method - get the view for a given scale
    */
-  protected abstract getView(scale: number, opts: RequestOptions): Promise<BlockView>
+  protected abstract getView(
+    scale: number,
+    opts: RequestOptions,
+  ): Promise<BlockView>
 
   /**
    * Gets features from a BigWig file
@@ -316,7 +337,9 @@ export abstract class BBI {
     refName: string,
     start: number,
     end: number,
-    opts: RequestOptions & { scale?: number; basesPerSpan?: number } = { scale: 1 },
+    opts: RequestOptions & { scale?: number; basesPerSpan?: number } = {
+      scale: 1,
+    },
   ): Promise<Observable<Feature[]>> {
     await this.getHeader(opts)
     const chrName = this.renameRefSeqs(refName)
@@ -342,11 +365,15 @@ export abstract class BBI {
     refName: string,
     start: number,
     end: number,
-    opts: RequestOptions & { scale?: number; basesPerSpan?: number } = { scale: 1 },
+    opts: RequestOptions & { scale?: number; basesPerSpan?: number } = {
+      scale: 1,
+    },
   ): Promise<Feature[]> {
     const ob = await this.getFeatureStream(refName, start, end, opts)
 
-    const ret = await ob.pipe(reduce((acc, curr) => acc.concat(curr))).toPromise()
+    const ret = await ob
+      .pipe(reduce((acc, curr) => acc.concat(curr)))
+      .toPromise()
     return ret || []
   }
 }

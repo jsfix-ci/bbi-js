@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["es2017", "es7", "es6", "dom"],
-    "skipLibCheck": true,
-    "declaration": true,
+    "lib": ["es2017", "dom"],
     "outDir": "dist",
     "strict": true,
+    "moduleResolution": "node",
     "esModuleInterop": true
   },
   "include": ["src"]
