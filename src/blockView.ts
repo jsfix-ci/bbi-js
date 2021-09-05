@@ -299,12 +299,10 @@ export class BlockView {
           const p = this.leafParser.parse(data).result
           if (p.blocksToFetch) {
             blocksToFetch = blocksToFetch.concat(
-              p.blocksToFetch
-                .filter(filterFeats)
-                .map((l: any): any => ({
-                  offset: l.blockOffset,
-                  length: l.blockSize,
-                })),
+              p.blocksToFetch.filter(filterFeats).map((l: any): any => ({
+                offset: l.blockOffset,
+                length: l.blockSize,
+              })),
             )
           }
           if (p.recurOffsets) {

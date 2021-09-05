@@ -22,7 +22,7 @@ interface Index {
 }
 
 export function filterUndef<T>(ts: (T | undefined)[]): T[] {
-  return ts.filter((t: T | undefined): t is T => !!t)
+  return ts.filter((t): t is T => !!t)
 }
 
 export class BigBed extends BBI {
@@ -40,11 +40,11 @@ export class BigBed extends BBI {
   public readIndices(opts: AbortSignal | RequestOptions = {}) {
     const options = 'aborted' in opts ? { signal: opts } : opts
 
-    //@ts-ignore
     return this.readIndicesCache.get(
       JSON.stringify(options),
       options,
-      options.signal,
+      //@ts-ignore
+      options?.signal,
     )
   }
 
@@ -54,10 +54,7 @@ export class BigBed extends BBI {
    * @param abortSignal - an optional AbortSignal to kill operation
    * @return promise for a BlockView
    */
-  protected async getView(
-    scale: number,
-    opts: RequestOptions,
-  ): Promise<BlockView> {
+  protected async getView(scale: number, opts: RequestOptions) {
     return this.getUnzoomedView(opts)
   }
 

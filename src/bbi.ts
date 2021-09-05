@@ -209,7 +209,7 @@ export abstract class BBI {
     return { ...header, isBigEndian }
   }
 
-  private _isBigEndian(buffer: Buffer): boolean {
+  private _isBigEndian(buffer: Buffer) {
     let ret = buffer.readInt32LE(0)
     if (ret === BIG_WIG_MAGIC || ret === BIG_BED_MAGIC) {
       return false
@@ -292,10 +292,12 @@ export abstract class BBI {
   }
 
   /*
-   * fetches the "unzoomed" view of the bigwig data. this is the default for bigbed
+   * fetches the "unzoomed" view of the bigwig data. this is the default for
+   * bigbed
+   *
    * @param abortSignal - a signal to optionally abort this operation
    */
-  protected async getUnzoomedView(opts: RequestOptions): Promise<BlockView> {
+  protected async getUnzoomedView(opts: RequestOptions) {
     const {
       unzoomedIndexOffset,
       zoomLevels,
@@ -356,7 +358,7 @@ export abstract class BBI {
     if (!view) {
       throw new Error('unable to get block view for data')
     }
-    return new Observable((observer: Observer<Feature[]>): void => {
+    return new Observable<Feature[]>(observer => {
       view.readWigData(chrName, start, end, observer, opts)
     })
   }
