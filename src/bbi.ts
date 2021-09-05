@@ -118,11 +118,11 @@ export abstract class BBI {
   protected bbi: GenericFilehandle
 
   protected headerCache = new AbortablePromiseCache({
-    cache: new QuickLRU({ maxSize: 1 }),
+    cache: new QuickLRU({ maxSize: 1 }) as any,
     fill: async (params: any, signal?: AbortSignal) => {
       return this._getHeader({ ...params, signal })
     },
-  })
+  }) as any
 
   protected renameRefSeqs: (a: string) => string
 
@@ -132,7 +132,8 @@ export abstract class BBI {
    */
   public getHeader(opts: RequestOptions | AbortSignal = {}) {
     const options = 'aborted' in opts ? { signal: opts } : opts
-    return this.headerCache.get(JSON.stringify(options), options, options.signal)
+
+    return this.headerCache.get(JSON.stringify(options), options, options?.signal)
   }
 
   /*
@@ -301,7 +302,7 @@ export abstract class BBI {
   /*
    * abstract method - get the view for a given scale
    */
-  protected abstract async getView(scale: number, opts: RequestOptions): Promise<BlockView>
+  protected abstract getView(scale: number, opts: RequestOptions): Promise<BlockView>
 
   /**
    * Gets features from a BigWig file

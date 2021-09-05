@@ -164,9 +164,9 @@ export class BlockView {
   private cirTreePromise?: Promise<{ bytesRead: number; buffer: Buffer }>
 
   private featureCache = new AbortablePromiseCache({
-    cache: new QuickLRU({ maxSize: 1000 }),
+    cache: new QuickLRU({ maxSize: 1000 }) as any,
 
-    fill: async (requestData: ReadData, signal: AbortSignal) => {
+    fill: async (requestData: ReadData, signal?: AbortSignal) => {
       const { length, offset } = requestData
       const { buffer } = await this.bbi.read(Buffer.alloc(length), 0, length, offset, { signal })
       return buffer

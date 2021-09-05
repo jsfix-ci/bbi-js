@@ -27,18 +27,20 @@ export function filterUndef<T>(ts: (T | undefined)[]): T[] {
 
 export class BigBed extends BBI {
   public readIndicesCache = new AbortablePromiseCache({
-    cache: new QuickLRU({ maxSize: 1 }),
+    cache: new QuickLRU({ maxSize: 1 }) as any,
     fill: async (args: any, signal?: AbortSignal) => {
       return this._readIndices({ ...args, signal })
     },
   })
 
-  public constructor(opts: any) {
+  public constructor(opts?: any) {
     super(opts)
   }
 
   public readIndices(opts: AbortSignal | RequestOptions = {}) {
     const options = 'aborted' in opts ? { signal: opts } : opts
+
+    //@ts-ignore
     return this.readIndicesCache.get(JSON.stringify(options), options, options.signal)
   }
 
@@ -193,7 +195,7 @@ export class BigBed extends BBI {
         reduce((acc, curr) => acc.concat(curr)),
         map(x => {
           for (let i = 0; i < x.length; i += 1) {
-             x[i].field = block.field // eslint-disable-line
+            x[i].field = block.field // eslint-disable-line
           }
           return x
         }),
