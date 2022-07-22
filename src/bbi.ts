@@ -1,6 +1,6 @@
 import { Parser } from '@gmod/binary-parser'
 import { LocalFile, RemoteFile, GenericFilehandle } from 'generic-filehandle'
-import { Observable, Observer } from 'rxjs'
+import { lastValueFrom, Observable, Observer } from 'rxjs';
 import { reduce } from 'rxjs/operators'
 import AbortablePromiseCache from 'abortable-promise-cache'
 import QuickLRU from 'quick-lru'
@@ -372,9 +372,8 @@ export abstract class BBI {
   ): Promise<Feature[]> {
     const ob = await this.getFeatureStream(refName, start, end, opts)
 
-    const ret = await ob
-      .pipe(reduce((acc, curr) => acc.concat(curr)))
-      .toPromise()
+    const ret = await lastValueFrom(ob
+      .pipe(reduce((acc, curr) => acc.concat(curr))))
     return ret || []
   }
 }

@@ -1,5 +1,5 @@
 import { Parser } from '@gmod/binary-parser'
-import { Observable, Observer, merge } from 'rxjs'
+import { lastValueFrom, Observable, Observer, merge } from 'rxjs';
 import { map, reduce } from 'rxjs/operators'
 import AbortablePromiseCache from 'abortable-promise-cache'
 import QuickLRU from 'quick-lru'
@@ -231,7 +231,7 @@ export class BigBed extends BBI {
         }),
       )
     })
-    const ret = await merge(...res).toPromise()
+    const ret = await lastValueFrom(merge(...res))
     return ret.filter((f: any) => {
       return f.rest.split('\t')[f.field - 3] === name
     })

@@ -1,3 +1,4 @@
+import { lastValueFrom } from 'rxjs';
 /* eslint @typescript-eslint/explicit-function-return-type: 0 */
 import { BigWig, Header } from '../src/'
 
@@ -216,7 +217,7 @@ describe('bigwig formats', () => {
     const aborter = new HalfAbortController()
     const ob = await ti.getFeatureStream('ctgA', 0, 100, { signal: aborter.signal })
     aborter.abort()
-    await expect(ob.toPromise()).rejects.toThrow(/aborted/)
+    await expect(lastValueFrom(ob)).rejects.toThrow(/aborted/)
   })
   it('test uncompressed bw (-unc from wigToBigWig)', async () => {
     const ti = new BigWig({
